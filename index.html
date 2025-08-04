@@ -27,7 +27,7 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,51,102,0.6);
+    background: rgba(8, 8, 8, 0.6);
   }
   .hero-content {
     position: relative;
@@ -44,7 +44,7 @@
 
   #lang-toggle {
     background: white;
-    color: #003366;
+    color: #232c34;
     border: none;
     padding: 6px 14px;
     border-radius: 5px;
@@ -78,7 +78,7 @@
     width: 100%;
     padding: 10px;
     margin-top: 8px;
-    background: #003366;
+    background: #232c34;
     color: white;
     border: none;
     border-radius: 8px;
@@ -90,7 +90,7 @@
     margin-top: 10px;
   }
   .auth-container p a {
-    color: #003366;
+    color: #232c34;
     text-decoration: none;
     font-weight: bold;
   }
@@ -100,7 +100,7 @@
   h2.section-title {
     text-align: center;
     margin-top: 50px;
-    color: #003366;
+    color: #232c34;
   }
 
   /* Grid layouts */
@@ -134,7 +134,7 @@
     z-index: 200;
   }
   #chat-toggle {
-    background: #003366;
+    background: #232c34;
     color: white;
     border: none;
     padding: 15px;
@@ -186,23 +186,72 @@
   </section>
 
   <main>
-    <!-- Login/Register -->
-    <div class="auth-container" id="login-card">
-      <h2 id="loginTitle">MSME Owner Login</h2>
-      <input type="text" id="login-username" placeholder="Username">
-      <input type="password" id="login-password" placeholder="Password">
-      <button onclick="login()">Login</button>
-      <p id="registerPrompt">Don't have an account? <a href="#" onclick="toggleRegister()">Register here</a></p>
-    </div>
+    <!-- Portal Selection -->
+  <div class="auth-container" id="role-select">
+    <h2>Select Your Portal</h2>
+    <button onclick="selectRole('seller')">MSME Entrepreneur</button>
+    <button onclick="selectRole('buyer')">Sustainable Buyer</button>
+    <button onclick="selectRole('investor')">Impact Investor</button>
+  </div>
 
-    <div class="auth-container hidden" id="register-card">
-      <h2 id="registerTitle">Register Your MSME</h2>
-      <input type="text" id="reg-username" placeholder="Username">
-      <input type="password" id="reg-password" placeholder="Password">
-      <input type="text" id="reg-msme" placeholder="MSME Name">
-      <button onclick="register()">Register</button>
-      <p id="loginPrompt">Already have an account? <a href="#" onclick="toggleRegister()">Login here</a></p>
-    </div>
+  <!-- Seller Portal -->
+  <div class="auth-container hidden" id="seller-login">
+    <h2>Seller Login</h2>
+    <input type="text" id="seller-username" placeholder="Username">
+    <input type="password" id="seller-password" placeholder="Password">
+    <button onclick="login('seller')">Login</button>
+    <p>Don't have an account? <a href="#" onclick="toggleRegister('seller')">Register here</a></p>
+    <a href="#" onclick="backToRoleSelect()">🔙 Back / पीछे जाओ</a>
+  </div>
+
+  <div class="auth-container hidden" id="seller-register">
+    <h2>Seller Registration</h2>
+    <input type="text" id="seller-reg-username" placeholder="Username">
+    <input type="password" id="seller-reg-password" placeholder="Password">
+    <input type="text" id="seller-reg-msme" placeholder="MSME Name">
+    <button onclick="register('seller')">Register</button>
+    <p>Already have an account? <a href="#" onclick="toggleLogin('seller')">Login here</a></p>
+    <a href="#" onclick="backToRoleSelect()">🔙 Back / पीछे जाओ</a>
+  </div>
+
+  <!-- Buyer Portal -->
+  <div class="auth-container hidden" id="buyer-login">
+    <h2>Buyer Login</h2>
+    <input type="text" id="buyer-username" placeholder="Username">
+    <input type="password" id="buyer-password" placeholder="Password">
+    <button onclick="login('buyer')">Login</button>
+    <p>Don't have an account? <a href="#" onclick="toggleRegister('buyer')">Register here</a></p>
+    <a href="#" onclick="backToRoleSelect()">🔙 Back / पीछे जाओ</a>
+  </div>
+
+  <div class="auth-container hidden" id="buyer-register">
+    <h2>Buyer Registration</h2>
+    <input type="text" id="buyer-reg-username" placeholder="Username">
+    <input type="password" id="buyer-reg-password" placeholder="Password">
+    <button onclick="register('buyer')">Register</button>
+    <p>Already have an account? <a href="#" onclick="toggleLogin('buyer')">Login here</a></p>
+    <a href="#" onclick="backToRoleSelect()">🔙 Back / पीछे जाओ</a>
+  </div>
+
+  <!-- Investor Portal -->
+  <div class="auth-container hidden" id="investor-login">
+    <h2>Investor Login</h2>
+    <input type="text" id="investor-username" placeholder="Username">
+    <input type="password" id="investor-password" placeholder="Password">
+    <button onclick="login('investor')">Login</button>
+    <p>Don't have an account? <a href="#" onclick="toggleRegister('investor')">Register here</a></p>
+    <a href="#" onclick="backToRoleSelect()">🔙 Back / पीछे जाओ</a>
+  </div>
+
+  <div class="auth-container hidden" id="investor-register">
+    <h2>Investor Registration</h2>
+    <input type="text" id="investor-reg-username" placeholder="Username">
+    <input type="password" id="investor-reg-password" placeholder="Password">
+    <button onclick="register('investor')">Register</button>
+    <p>Already have an account? <a href="#" onclick="toggleLogin('investor')">Login here</a></p>
+    <a href="#" onclick="backToRoleSelect()">🔙 Back / पीछे जाओ</a>
+  </div>
+
 
     <!-- Focus Areas -->
     <h2 class="section-title" id="focusTitle">Our Focus Areas</h2>
@@ -228,6 +277,49 @@
   </div>
 
 <script>
+    function selectRole(role) {
+    document.getElementById('role-select').classList.add('hidden');
+    document.getElementById(`${role}-login`).classList.remove('hidden');
+  }
+
+  function toggleRegister(role) {
+    document.getElementById(`${role}-login`).classList.add('hidden');
+    document.getElementById(`${role}-register`).classList.remove('hidden');
+  }
+
+  function toggleLogin(role) {
+    document.getElementById(`${role}-register`).classList.add('hidden');
+    document.getElementById(`${role}-login`).classList.remove('hidden');
+  }
+
+  function backToRoleSelect() {
+    ['seller', 'buyer', 'investor'].forEach(role => {
+      document.getElementById(`${role}-login`).classList.add('hidden');
+      document.getElementById(`${role}-register`).classList.add('hidden');
+    });
+    document.getElementById('role-select').classList.remove('hidden');
+  }
+
+  function login(role) {
+    const username = document.getElementById(`${role}-username`).value.trim();
+    const password = document.getElementById(`${role}-password`).value.trim();
+    if (!username || !password) {
+      alert('Please enter both username and password.');
+      return;
+    }
+    alert(`${role} login successful!`);
+  }
+
+  function register(role) {
+    const username = document.getElementById(`${role}-reg-username`).value.trim();
+    const password = document.getElementById(`${role}-reg-password`).value.trim();
+    if (!username || !password) {
+      alert('Please fill all fields.');
+      return;
+    }
+    alert(`${role} registered successfully!`);
+    toggleLogin(role);
+  }
 /* --- Data --- */
 const problemsData = [
   { en:["1. Limited Credit Access","Solution: Digital credit scoring using GST/UPI data."],
