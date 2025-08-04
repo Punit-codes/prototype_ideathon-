@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delhi MSME Resilience Hub</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+  }
+
+  /* Hero Banner */
+  .hero {
+    position: relative;
+    height: 60vh;
+    background: url('https://images.unsplash.com/photo-1603398938378-c7c8d4b5dd01?fit=crop&w=1600&q=80') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,51,102,0.6);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+  }
+  .hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+  .hero-content p {
+    font-size: 1.2rem;
+  }
+
+  #lang-toggle {
+    background: white;
+    color: #003366;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+
+  main { padding: 20px; }
+
+  /* Auth Card */
+  .auth-container {
+    background: #fff;
+    width: 320px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    margin: -80px auto 40px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .auth-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  .auth-container button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    background: #003366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .auth-container p {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  .auth-container p a {
+    color: #003366;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .hidden { display: none; }
+
+  h2.section-title {
+    text-align: center;
+    margin-top: 50px;
+    color: #003366;
+  }
+
+  /* Grid layouts */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* AI Helper */
+  #ai-helper {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: move;
+    z-index: 200;
+  }
+  #chat-toggle {
+    background: #003366;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  #chat-box {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 280px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  #chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 200px;
+    margin-bottom: 10px;
+  }
+  #chat-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  #send-btn {
+    margin-top: 5px;
+    background: #003366;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-content">
+      <h1 id="title">Delhi MSME Resilience Hub</h1>
+      <p id="subtitle">Building Resilient MSMEs through Access to Finance, Markets & Technology</p>
+      <button id="lang-toggle">हिन्दी</button>
+    </div>
+  </section>
+
+  <main>
+    <!-- Login/Register -->
+    <div class="auth-container" id="login-card">
+      <h2 id="loginTitle">MSME Owner Login</h2>
+      <input type="text" id="login-username" placeholder="Username">
+      <input type="password" id="login-password" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <p id="registerPrompt">Don't have an account? <a href="#" onclick="toggleRegister()">Register here</a></p>
+    </div>
+
+    <div class="auth-container hidden" id="register-card">
+      <h2 id="registerTitle">Register Your MSME</h2>
+      <input type="text" id="reg-username" placeholder="Username">
+      <input type="password" id="reg-password" placeholder="Password">
+      <input type="text" id="reg-msme" placeholder="MSME Name">
+      <button onclick="register()">Register</button>
+      <p id="loginPrompt">Already have an account? <a href="#" onclick="toggleRegister()">Login here</a></p>
+    </div>
+
+    <!-- Focus Areas -->
+    <h2 class="section-title" id="focusTitle">Our Focus Areas</h2>
+    <div class="grid" id="focusGrid">
+      <div class="card"><h3 id="financeHub">Finance Hub</h3><p id="financeDesc">Digital loans, invoice discounting, peer-to-peer lending.</p></div>
+      <div class="card"><h3 id="marketHub">Market Access Hub</h3><p id="marketDesc">B2B marketplace, export linkages, vendor development programs.</p></div>
+      <div class="card"><h3 id="techHub">Technology Hub</h3><p id="techDesc">Digital tools, ERP/CRM support, training & mentorship.</p></div>
+    </div>
+
+    <!-- Challenges and Solutions -->
+    <h2 class="section-title" id="problemTitle">Key Challenges and Solutions</h2>
+    <div class="grid" id="problemsGrid"></div>
+  </main>
+
+  <!-- AI Helper -->
+  <div id="ai-helper">
+    <button id="chat-toggle">🤖</button>
+    <div id="chat-box" class="hidden">
+      <div id="chat-messages"></div>
+      <input type="text" id="chat-input" placeholder="Ask me...">
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+<script>
+/* --- Data --- */
+const problemsData = [
+  { en:["1. Limited Credit Access","Solution: Digital credit scoring using GST/UPI data."],
+    hi:["1. सीमित ऋण पहुँच","समाधान: जीएसटी/यूपीआई डेटा से डिजिटल क्रेडिट स्कोरिंग।"] },
+  { en:["2. Delayed Payments","Solution: Invoice discounting & blockchain contracts."],
+    hi:["2. विलंबित भुगतान","समाधान: इनवॉइस डिस्काउंटिंग और ब्लॉकचेन अनुबंध।"] },
+  { en:["3. Poor Market Linkage","Solution: Cluster-based B2B e-marketplaces."],
+    hi:["3. कमजोर बाजार संपर्क","समाधान: क्लस्टर आधारित बी2बी ई-मार्केटप्लेस।"] },
+  { en:["4. Weak Digital Presence","Solution: Digital starter kits for websites & catalogs."],
+    hi:["4. कमजोर डिजिटल उपस्थिति","समाधान: वेबसाइट और कैटलॉग के लिए डिजिटल स्टार्टर किट।"] },
+  { en:["5. Lack of E-commerce Capability","Solution: MSME-friendly portal linked with Amazon/Flipkart."],
+    hi:["5. ई-कॉमर्स क्षमता की कमी","समाधान: एमएसएमई पोर्टल जो अमेज़न/फ्लिपकार्ट से जुड़ा हो।"] },
+  { en:["6. Low Tech Adoption","Solution: Subsidized SaaS ERP/CRM tools."],
+    hi:["6. कम तकनीकी अपनाना","समाधान: सब्सिडी वाले SaaS ERP/CRM टूल।"] },
+  { en:["7. Skill Gaps","Solution: AI-based learning apps and workshops."],
+    hi:["7. कौशल की कमी","समाधान: एआई आधारित लर्निंग ऐप्स और कार्यशालाएं।"] },
+  { en:["8. Regulatory Burden","Solution: Single-window compliance portal."],
+    hi:["8. नियामक बोझ","समाधान: सिंगल विंडो अनुपालन पोर्टल।"] },
+  { en:["9. Costly Tech Upgrade","Solution: Shared tech centers & low-interest loans."],
+    hi:["9. महंगा तकनीकी उन्नयन","समाधान: साझा टेक सेंटर और कम ब्याज वाले ऋण।"] },
+  { en:["10. Awareness Gaps","Solution: Awareness hubs & mobile apps in local languages."],
+    hi:["10. जागरूकता की कमी","समाधान: जागरूकता हब और स्थानीय भाषा में मोबाइल ऐप।"] },
+];
+let currentLang='en';
+
+/* --- Render problems grid --- */
+function renderProblems(){
+  const container=document.getElementById('problemsGrid');
+  container.innerHTML="";
+  problemsData.forEach(p=>{
+    const [title,desc]=p[currentLang];
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h4>${title}</h4><p>${desc}</p>`;
+    container.appendChild(card);
+  });
+  observeCards();
+}
+renderProblems();
+
+/* --- Language toggle --- */
+document.getElementById('lang-toggle').addEventListener('click',()=>{
+  currentLang=currentLang==='en'?'hi':'en';
+  document.getElementById('lang-toggle').textContent=currentLang==='en'?'हिन्दी':'English';
+  document.getElementById('title').textContent=currentLang==='en'?"Delhi MSME Resilience Hub":"दिल्ली एमएसएमई रेज़िलिएंस हब";
+  document.getElementById('subtitle').textContent=currentLang==='en'?"Building Resilient MSMEs through Access to Finance, Markets & Technology":"वित्त, बाजार और प्रौद्योगिकी की पहुंच से MSMEs को सशक्त बनाना";
+  document.getElementById('focusTitle').textContent=currentLang==='en'?"Our Focus Areas":"हमारे मुख्य क्षेत्र";
+  document.getElementById('financeHub').textContent=currentLang==='en'?"Finance Hub":"वित्त केंद्र";
+  document.getElementById('financeDesc').textContent=currentLang==='en'?"Digital loans, invoice discounting, peer-to-peer lending.":"डिजिटल ऋण, इनवॉइस डिस्काउंटिंग, पी2पी लेंडिंग।";
+  document.getElementById('marketHub').textContent=currentLang==='en'?"Market Access Hub":"बाज़ार पहुंच केंद्र";
+  document.getElementById('marketDesc').textContent=currentLang==='en'?"B2B marketplace, export linkages, vendor development programs.":"बी2बी मार्केटप्लेस, निर्यात संबंध, वेंडर विकास कार्यक्रम।";
+  document.getElementById('techHub').textContent=currentLang==='en'?"Technology Hub":"प्रौद्योगिकी केंद्र";
+  document.getElementById('techDesc').textContent=currentLang==='en'?"Digital tools, ERP/CRM support, training & mentorship.":"डिजिटल टूल, ईआरपी/सीआरएम सपोर्ट, प्रशिक्षण और मार्गदर्शन।";
+  document.getElementById('problemTitle').textContent=currentLang==='en'?"Key Challenges and Solutions":"मुख्य चुनौतियाँ और समाधान";
+  document.getElementById('loginTitle').textContent=currentLang==='en'?"MSME Owner Login":"एमएसएमई मालिक लॉगिन";
+  document.getElementById('registerTitle').textContent=currentLang==='en'?"Register Your MSME":"अपना एमएसएमई पंजीकृत करें";
+  document.getElementById('registerPrompt').innerHTML=currentLang==='en'?"Don't have an account? <a href='#' onclick='toggleRegister()'>Register here</a>":"खाता नहीं है? <a href='#' onclick='toggleRegister()'>यहां रजिस्टर करें</a>";
+  document.getElementById('loginPrompt').innerHTML=currentLang==='en'?"Already have an account? <a href='#' onclick='toggleRegister()'>Login here</a>":"पहले से खाता है? <a href='#' onclick='toggleRegister()'>यहां लॉगिन करें</a>";
+  renderProblems();
+});
+
+/* --- Login/Register logic --- */
+function toggleRegister(){
+  document.getElementById('login-card').classList.toggle('hidden');
+  document.getElementById('register-card').classList.toggle('hidden');
+}
+function register(){
+  const u=document.getElementById('reg-username').value.trim();
+  const p=document.getElementById('reg-password').value.trim();
+  const m=document.getElementById('reg-msme').value.trim();
+  if(!u||!p||!m){alert('Fill all fields');return;}
+  localStorage.setItem('msmeUser',JSON.stringify({username:u,password:p,msme:m}));
+  alert('Registration successful! Please login.');
+  toggleRegister();
+}
+function login(){
+  const u=document.getElementById('login-username').value.trim();
+  const p=document.getElementById('login-password').value.trim();
+  const stored=JSON.parse(localStorage.getItem('msmeUser'));
+  if(!stored){alert('No user found. Please register.');return;}
+  if(stored.username===u&&stored.password===p){
+    alert('Login successful. (Dashboard integration in next version)');
+  } else { alert('Invalid credentials.'); }
+}
+
+/* --- AI helper chat --- */
+document.getElementById('chat-toggle').addEventListener('click',()=>{
+  document.getElementById('chat-box').classList.toggle('hidden')
+});
+document.getElementById('send-btn').addEventListener('click',()=>{
+  const val=document.getElementById('chat-input').value.trim();
+  if(!val)return;
+  addMsg('You',val);
+  document.getElementById('chat-input').value="";
+  let reply="I can help you with finance, markets, and technology info.";
+  if(val.toLowerCase().includes('finance'))reply="Finance Hub: loans, invoice discounting, P2P lending.";
+  if(val.toLowerCase().includes('market'))reply="Market Hub: B2B linkages and export connections.";
+  if(val.toLowerCase().includes('tech'))reply="Tech Hub: ERP, CRM, digital tools.";
+  setTimeout(()=>addMsg('AI Helper',reply),500);
+});
+function addMsg(sender,text){
+  const m=document.createElement('div');
+  m.textContent=`${sender}: ${text}`;
+  document.getElementById('chat-messages').appendChild(m);
+  document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+}
+
+/* --- Drag AI helper --- */
+const helper=document.getElementById('ai-helper');
+let drag=false,ox,oy;
+helper.addEventListener('mousedown',e=>{
+  drag=true;ox=e.offsetX;oy=e.offsetY;
+});
+document.addEventListener('mousemove',e=>{
+  if(drag){
+    helper.style.left=`${e.pageX-ox}px`;
+    helper.style.top=`${e.pageY-oy}px`;
+    helper.style.right='auto';
+    helper.style.bottom='auto';
+    helper.style.position='absolute';
+  }
+});
+document.addEventListener('mouseup',()=>drag=false);
+
+/* --- Scroll animations (restart on scroll up) --- */
+function observeCards(){
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      } else {
+        entry.target.classList.remove('visible');
+      }
+    });
+  },{threshold:0.2});
+  document.querySelectorAll('.card').forEach(card=>observer.observe(card));
+}
+observeCards();
+
+/* --- Focus Area Modal --- */
+const focusDetails = {
+  finance: {
+    title: "Finance Hub",
+    content: "Get easy access to loans, invoice discounting, peer-to-peer lending, and credit building tools.",
+    links: ["Apply for Digital Loan", "Learn about Invoice Discounting"]
+  },
+  market: {
+    title: "Market Access Hub",
+    content: "Expand your reach with B2B marketplaces, export linkages, and vendor development programs.",
+    links: ["Join B2B Marketplace", "Export Assistance"]
+  },
+  tech: {
+    title: "Technology Hub",
+    content: "Adopt digital tools, ERP/CRM systems, and receive mentorship and training.",
+    links: ["ERP/CRM Tools", "Tech Mentorship Programs"]
+  }
+};
+
+const invoiceDiscountingTips = [
+  "1. Maintain clear digital records of all invoices and GST filings.",
+  "2. Approach fintech platforms like KredX, M1xchange, or TradeReceivables platform (TReDS).",
+  "3. Submit unpaid invoices from reliable buyers (with good credit).",
+  "4. Negotiate the discounting fee (usually 1-3% of invoice value).",
+  "5. Once approved, get funds within 24-72 hours instead of waiting 60-90 days.",
+  "6. Use funds to improve cash flow, buy raw materials, or scale production.",
+  "7. Ensure timely repayment when the buyer pays the invoice to avoid penalties."
+];
+
+function createModal(id){
+  const detail = focusDetails[id];
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.top = 0;
+  modal.style.left = 0;
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.background = 'rgba(0,0,0,0.6)';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 1000;
+
+  // Modal HTML
+  modal.innerHTML = `
+    <div style="background:white;padding:20px;border-radius:10px;max-width:420px;text-align:center">
+      <h2>${detail.title}</h2>
+      <p>${detail.content}</p>
+      <div id="modal-buttons"></div>
+      <br>
+      <button style="margin-top:10px;padding:10px 15px;border:none;border-radius:5px;background:#aaa;color:white;cursor:pointer" id="closeModal">Close</button>
+    </div>`;
+  document.body.appendChild(modal);
+
+  // Close event
+  modal.querySelector('#closeModal').addEventListener('click',()=>modal.remove());
+
+  // Add buttons dynamically
+  const btnContainer = modal.querySelector('#modal-buttons');
+  detail.links.forEach(link => {
+    const btn = document.createElement('button');
+    btn.textContent = link;
+    btn.style.margin = "5px";
+    btn.style.padding = "10px 15px";
+    btn.style.background = "#003366";
+    btn.style.color = "white";
+    btn.style.border = "none";
+    btn.style.borderRadius = "5px";
+    btn.style.cursor = "pointer";
+
+    btn.addEventListener('click', () => {
+      if (link === "Learn about Invoice Discounting") {
+        showInvoiceTips();
+      } else {
+        alert(`${link} page coming soon!`);
+      }
+    });
+
+    btnContainer.appendChild(btn);
+  });
+}
+
+function showInvoiceTips() {
+  const tipsModal = document.createElement('div');
+  tipsModal.style.position = 'fixed';
+  tipsModal.style.top = 0;
+  tipsModal.style.left = 0;
+  tipsModal.style.width = '100%';
+  tipsModal.style.height = '100%';
+  tipsModal.style.background = 'rgba(0,0,0,0.6)';
+  tipsModal.style.display = 'flex';
+  tipsModal.style.alignItems = 'center';
+  tipsModal.style.justifyContent = 'center';
+  tipsModal.style.zIndex = 1100;
+
+  tipsModal.innerHTML = `
+    <div style="background:white;padding:20px;border-radius:10px;max-width:450px;max-height:80%;overflow:auto;text-align:left">
+      <h2>How to Use Invoice Discounting</h2>
+      <ul style="padding-left:20px">
+        ${invoiceDiscountingTips.map(tip => `<li>${tip}</li>`).join('')}
+      </ul>
+      <button style="margin-top:15px;padding:10px 15px;border:none;border-radius:5px;background:#aaa;color:white;cursor:pointer" id="closeTips">Close</button>
+    </div>`;
+  
+  document.body.appendChild(tipsModal);
+  tipsModal.querySelector('#closeTips').addEventListener('click',()=>tipsModal.remove());
+}
+
+/* Add click events to focus area cards */
+document.getElementById('financeHub').parentElement.addEventListener('click',()=>createModal('finance'));
+document.getElementById('marketHub').parentElement.addEventListener('click',()=>createModal('market'));
+document.getElementById('techHub').parentElement.addEventListener('click',()=>createModal('tech'));
+</script>
+
+</body>
+</html>
